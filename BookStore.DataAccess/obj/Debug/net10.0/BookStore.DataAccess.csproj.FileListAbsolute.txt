@@ -1,0 +1,17 @@
+C:\Study\BookStore\BookStore.DataAccess\bin\Debug\net10.0\BookStore.DataAccess.deps.json
+C:\Study\BookStore\BookStore.DataAccess\bin\Debug\net10.0\BookStore.DataAccess.runtimeconfig.json
+C:\Study\BookStore\BookStore.DataAccess\bin\Debug\net10.0\BookStore.DataAccess.dll
+C:\Study\BookStore\BookStore.DataAccess\bin\Debug\net10.0\BookStore.DataAccess.pdb
+C:\Study\BookStore\BookStore.DataAccess\bin\Debug\net10.0\BookStore.Core.dll
+C:\Study\BookStore\BookStore.DataAccess\bin\Debug\net10.0\BookStore.Core.pdb
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\BookStore.DataAccess.csproj.AssemblyReference.cache
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\BookStore.DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\BookStore.DataAccess.AssemblyInfoInputs.cache
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\BookStore.DataAccess.AssemblyInfo.cs
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\BookStore.DataAccess.csproj.CoreCompileInputs.cache
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\BookStor.8FF6026C.Up2Date
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\BookStore.DataAccess.dll
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\refint\BookStore.DataAccess.dll
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\BookStore.DataAccess.pdb
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\BookStore.DataAccess.genruntimeconfig.cache
+C:\Study\BookStore\BookStore.DataAccess\obj\Debug\net10.0\ref\BookStore.DataAccess.dll
