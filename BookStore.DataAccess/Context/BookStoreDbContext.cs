@@ -9,6 +9,7 @@ public class BookStoreDbContext : DbContext
         DbContextOptions<BookStoreDbContext> options)
         : base(options)
     {
+        Database.EnsureCreated();
     }
 
     public DbSet<BookEntity> Books => Set<BookEntity>();
