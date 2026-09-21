@@ -1,4 +1,5 @@
 using BookStore.Core.Interfaces;
+using BookStore.Core.Services;
 using BookStore.DataAccess.Context;
 using BookStore.DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,12 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+// Domain services
+builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<GenreService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<OrderService>();
 
 // Controllers
 builder.Services.AddControllers();
