@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "RFQOfcrvwr0=",
+  "dgSpecHash": "1Nwg1cfYEsU=",
   "success": true,
   "projectFilePath": "C:\\Study\\BookStore\\BookStore.DataAccess\\BookStore.DataAccess.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\csharpfunctionalextensions\\3.7.0\\csharpfunctionalextensions.3.7.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.build.framework\\18.0.2\\microsoft.build.framework.18.0.2.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.11.0\\microsoft.codeanalysis.analyzers.3.11.0.nupkg.sha512",

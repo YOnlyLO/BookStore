@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "JjZp30cScc8=",
+  "dgSpecHash": "6shHEFJ5PeM=",
   "success": true,
   "projectFilePath": "C:\\Study\\BookStore\\BookStore.Core\\BookStore.Core.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\csharpfunctionalextensions\\3.7.0\\csharpfunctionalextensions.3.7.0.nupkg.sha512"
+  ],
   "logs": []
 }
