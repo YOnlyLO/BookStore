@@ -26,6 +26,18 @@ public class OrderItem
         UnitPrice = unitPrice;
     }
 
+    private OrderItem(
+        Guid id,
+        Guid bookId,
+        int quantity,
+        decimal unitPrice)
+    {
+        Id = id;
+        BookId = bookId;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+    }
+
     public static Result<OrderItem> Create(
         Guid bookId,
         int quantity,
@@ -59,5 +71,31 @@ public class OrderItem
         Quantity += quantity;
 
         return Result.Success();
+    }
+
+    public static Result<OrderItem> Restore(
+        Guid id,
+        Guid bookId,
+        int quantity,
+        decimal unitPrice)
+    {
+        if (id == Guid.Empty)
+            return Result.Failure<OrderItem>("Order item id cannot be empty.");
+
+        if (bookId == Guid.Empty)
+            return Result.Failure<OrderItem>("Book id cannot be empty.");
+
+        if (quantity <= 0)
+            return Result.Failure<OrderItem>("Order item quantity must be greater than zero.");
+
+        if (unitPrice <= 0)
+            return Result.Failure<OrderItem>("Order item unit price must be greater than zero.");
+
+        return Result.Success(
+            new OrderItem(
+                id,
+                bookId,
+                quantity,
+                unitPrice));
     }
 }

@@ -15,6 +15,12 @@ public class Genre
         Name = name;
     }
 
+    private Genre(Guid id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
+
     public static Result<Genre> Create(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -42,5 +48,20 @@ public class Genre
         Name = name;
 
         return Result.Success();
+    }
+
+    public static Result<Genre> Restore(Guid id, string name)
+    {
+        if (id == Guid.Empty)
+            return Result.Failure<Genre>("Genre id cannot be empty.");
+
+        if (string.IsNullOrWhiteSpace(name))
+            return Result.Failure<Genre>("Genre name cannot be empty.");
+
+        if (name.Length > 200)
+            return Result.Failure<Genre>("Genre name cannot exceed 200 characters.");
+
+        return Result.Success(
+            new Genre(id, name));
     }
 }

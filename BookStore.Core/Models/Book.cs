@@ -36,6 +36,24 @@ public class Book
         GenreId = genreId;
     }
 
+    private Book(
+        Guid id,
+        string title,
+        string author,
+        string? description,
+        decimal price,
+        int stockQuantity,
+        Guid genreId)
+    {
+        Id = id;
+        Title = title;
+        Author = author;
+        Description = description;
+        Price = price;
+        StockQuantity = stockQuantity;
+        GenreId = genreId;
+    }
+
     public static Result<Book> Create(
         string title,
         string author,
@@ -173,5 +191,52 @@ public class Book
         StockQuantity -= quantity;
 
         return Result.Success();
+    }
+
+    public static Result<Book> Restore(
+        Guid id,
+        string title,
+        string author,
+        string? description,
+        decimal price,
+        int stockQuantity,
+        Guid genreId)
+    {
+    if (id == Guid.Empty)
+        return Result.Failure<Book>("Book id cannot be empty.");
+
+    if (string.IsNullOrWhiteSpace(title))
+        return Result.Failure<Book>("Book title cannot be empty.");
+
+    if (title.Length > 200)
+        return Result.Failure<Book>("Book title cannot exceed 200 characters.");
+
+    if (string.IsNullOrWhiteSpace(author))
+        return Result.Failure<Book>("Book author cannot be empty.");
+
+    if (author.Length > 200)
+        return Result.Failure<Book>("Book author cannot exceed 200 characters.");
+
+    if (description is not null && description.Length > 2000)
+        return Result.Failure<Book>("Book description cannot exceed 2000 characters.");
+
+    if (price <= 0)
+        return Result.Failure<Book>("Book price must be greater than zero.");
+
+    if (stockQuantity < 0)
+        return Result.Failure<Book>("Book stock quantity cannot be negative.");
+
+    if (genreId == Guid.Empty)
+        return Result.Failure<Book>("Genre id cannot be empty.");
+
+    return Result.Success(
+        new Book(
+            id,
+            title,
+            author,
+            description,
+            price,
+            stockQuantity,
+            genreId));
     }
 }

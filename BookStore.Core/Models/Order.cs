@@ -31,6 +31,21 @@ public class Order
         Status = OrderStatus.New;
     }
 
+    private Order(
+        Guid id,
+        Guid userId,
+        DateTime createdAt,
+        OrderStatus status,
+        IEnumerable<OrderItem> items)
+    {
+        Id = id;
+        UserId = userId;
+        CreatedAt = createdAt;
+        Status = status;
+
+        _items = items.ToList();
+    }
+
     public static Result<Order> Create(Guid userId)
     {
         if (userId == Guid.Empty)
@@ -140,5 +155,35 @@ public class Order
         Status = OrderStatus.Cancelled;
 
         return Result.Success();
+    }
+
+    public static Result<Order> Restore(
+        Guid id,
+        Guid userId,
+        DateTime createdAt,
+        OrderStatus status,
+        IEnumerable<OrderItem> items)
+    {
+        if (id == Guid.Empty)
+            return Result.Failure<Order>("Order id cannot be empty.");
+
+        if (userId == Guid.Empty)
+            return Result.Failure<Order>("User id cannot be empty.");
+
+        if (items is null)
+            return Result.Failure<Order>("Order items cannot be null.");
+
+        var itemList = items.ToList();
+
+        if (itemList.Any(item => item is null))
+            return Result.Failure<Order>("Order cannot contain null items.");
+
+        return Result.Success(
+            new Order(
+                id,
+                userId,
+                createdAt,
+                status,
+                itemList));
     }
 }

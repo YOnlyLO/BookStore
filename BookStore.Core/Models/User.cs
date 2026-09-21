@@ -28,6 +28,20 @@ public class User
         PasswordHash = passwordHash;
     }
 
+    private User(
+        Guid id,
+        string firstName,
+        string lastName,
+        string email,
+        string passwordHash)
+    {
+        Id = id;
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        PasswordHash = passwordHash;
+    }
+
     public static Result<User> Create(
         string firstName,
         string lastName,
@@ -120,5 +134,45 @@ public class User
         PasswordHash = passwordHash;
 
         return Result.Success();
+    }
+
+    public static Result<User> Restore(
+        Guid id,
+        string firstName,
+        string lastName,
+        string email,
+        string passwordHash)
+    {
+        if (id == Guid.Empty)
+            return Result.Failure<User>("User id cannot be empty.");
+
+        if (string.IsNullOrWhiteSpace(firstName))
+            return Result.Failure<User>("First name cannot be empty.");
+
+        if (firstName.Length > 100)
+            return Result.Failure<User>("First name cannot exceed 100 characters.");
+
+        if (string.IsNullOrWhiteSpace(lastName))
+            return Result.Failure<User>("Last name cannot be empty.");
+
+        if (lastName.Length > 100)
+            return Result.Failure<User>("Last name cannot exceed 100 characters.");
+
+        if (string.IsNullOrWhiteSpace(email))
+            return Result.Failure<User>("Email cannot be empty.");
+
+        if (email.Length > 320)
+            return Result.Failure<User>("Email cannot exceed 320 characters.");
+
+        if (string.IsNullOrWhiteSpace(passwordHash))
+            return Result.Failure<User>("Password hash cannot be empty.");
+
+        return Result.Success(
+            new User(
+                id,
+                firstName,
+                lastName,
+                email,
+                passwordHash));
     }
 }
