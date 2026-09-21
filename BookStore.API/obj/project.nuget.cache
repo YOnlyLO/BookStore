@@ -1,12 +1,31 @@
 {
   "version": 2,
-  "dgSpecHash": "kR1VuK12B4o=",
+  "dgSpecHash": "/d3YYC2+ta0=",
   "success": true,
   "projectFilePath": "C:\\Study\\BookStore\\BookStore.API\\BookStore.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\csharpfunctionalextensions\\3.7.0\\csharpfunctionalextensions.3.7.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.11\\microsoft.aspnetcore.openapi.10.0.11.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.openapi\\2.7.5\\microsoft.openapi.2.7.5.nupkg.sha512"
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.entityframeworkcore\\10.0.12\\microsoft.entityframeworkcore.10.0.12.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\10.0.12\\microsoft.entityframeworkcore.abstractions.10.0.12.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.12\\microsoft.entityframeworkcore.analyzers.10.0.12.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\5.0.7\\microsoft.entityframeworkcore.relational.5.0.7.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.openapi\\2.7.5\\microsoft.openapi.2.7.5.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\npgsql\\5.0.7\\npgsql.5.0.7.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\5.0.7\\npgsql.entityframeworkcore.postgresql.5.0.7.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "Package 'Npgsql' 5.0.7 has a known high severity vulnerability, https://github.com/advisories/GHSA-x9vc-6hfv-hg8c",
+      "projectPath": "C:\\Study\\BookStore\\BookStore.API\\BookStore.API.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Study\\BookStore\\BookStore.API\\BookStore.API.csproj",
+      "libraryId": "Npgsql",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
 }

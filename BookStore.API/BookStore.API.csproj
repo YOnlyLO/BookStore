@@ -8,10 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BookStore.Core\BookStore.Core.csproj" />
+    <ProjectReference Include="..\BookStore.DataAccess\BookStore.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
