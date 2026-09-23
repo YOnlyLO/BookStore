@@ -1,0 +1,27 @@
+<section class="genres">
+  <h1>Жанры</h1>
+
+  @if (isLoading()) {
+    <p>Загрузка жанров...</p>
+  }
+
+  @if (error()) {
+    <p class="error">
+      {{ error() }}
+    </p>
+  }
+
+  @if (!isLoading() && !error()) {
+    @if (genres().length === 0) {
+      <p>Жанров пока нет.</p>
+    } @else {
+      <ul class="genres-list">
+        @for (genre of genres(); track genre.id) {
+          <li class="genre-item">
+            {{ genre.name }}
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>
