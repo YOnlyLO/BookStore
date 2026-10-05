@@ -10,6 +10,11 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItemEntity>
     {
         builder.HasKey(item => item.Id);
 
+        // Id генерирует домен (OrderItem.Create). Иначе EF принимает новую позицию
+        // с заполненным ключом за существующую и вместо INSERT выполняет UPDATE.
+        builder.Property(item => item.Id)
+            .ValueGeneratedNever();
+
         builder.Property(item => item.Quantity)
             .IsRequired();
 
