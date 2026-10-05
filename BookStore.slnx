@@ -2,6 +2,7 @@
   <Project Path="BookStore.API/BookStore.API.csproj" />
   <Project Path="BookStore.Core/BookStore.Core.csproj" />
   <Project Path="BookStore.DataAccess/BookStore.DataAccess.csproj" />
+  <Project Path="BookStore.GUI/BookStore.GUI.csproj" />
   <Project Path="BookStore.Test/BookStore.Test.csproj" />
   <Project Path="BookStore.WebUiTest/BookStore.WebUiTest.csproj" />
 </Solution>
