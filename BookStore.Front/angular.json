@@ -48,6 +48,14 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "uitest": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.uitest.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -60,6 +68,9 @@
             },
             "development": {
               "buildTarget": "BookStore.Front:build:development"
+            },
+            "uitest": {
+              "buildTarget": "BookStore.Front:build:development,uitest"
             }
           },
           "defaultConfiguration": "development"
