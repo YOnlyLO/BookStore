@@ -1,0 +1,122 @@
+<header class="page-header">
+  <div>
+    <h1 class="page-title">Жанры</h1>
+    <p class="page-subtitle">Справочник жанров, к которым относятся книги</p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn-ghost" [disabled]="genres.isLoading()" (click)="reload()">
+      <app-icon name="refresh" [class.spin]="genres.isLoading()" />
+      Обновить
+    </button>
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <app-icon name="plus" />
+      Добавить жанр
+    </button>
+  </div>
+</header>
+
+<section class="panel">
+  <div class="panel-header">
+    <span class="panel-title">Все жанры</span>
+    <span class="counter">{{ rows().length }}</span>
+  </div>
+
+  @if (loadError()) {
+    <div class="state state-error" role="alert">
+      <app-icon name="alert" />
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn-ghost btn-sm" (click)="reload()">Повторить</button>
+    </div>
+  } @else if (genres.isLoading() && rows().length === 0) {
+    <div class="state">
+      <span class="spinner"></span>
+      <p>Загрузка жанров…</p>
+    </div>
+  } @else if (rows().length === 0) {
+    <div class="state">
+      <p>Жанров пока нет.</p>
+      <button type="button" class="btn btn-primary btn-sm" (click)="openCreate()">
+        <app-icon name="plus" />
+        Добавить первый жанр
+      </button>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th class="num">Книг</th>
+            <th class="actions"><span class="sr-only">Действия</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (genre of rows(); track genre.id) {
+            <tr>
+              <td class="cell-main">{{ genre.name }}</td>
+              <td class="num">{{ bookCounts().get(genre.id) ?? 0 }}</td>
+              <td class="actions">
+                <button type="button" class="btn btn-ghost btn-sm" (click)="openEdit(genre)">
+                  <app-icon name="edit" />
+                  Изменить
+                </button>
+                <button type="button" class="btn btn-danger-ghost btn-sm" (click)="askDelete(genre)">
+                  <app-icon name="trash" />
+                  Удалить
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (isEditorOpen()) {
+  <app-modal [title]="editedGenre() ? 'Изменение жанра' : 'Новый жанр'" (closed)="closeEditor()">
+    <form [formGroup]="form" novalidate (ngSubmit)="save()">
+      <div class="modal-body">
+        <label class="field">
+          <span class="field-label">Название</span>
+          <input
+            class="input"
+            formControlName="name"
+            placeholder="Например, Фантастика"
+            autocomplete="off"
+            autofocus
+          />
+          @if (fieldError(form.controls.name); as error) {
+            <span class="field-error">{{ error }}</span>
+          }
+        </label>
+
+        @if (saveError()) {
+          <div class="alert alert-error" role="alert">{{ saveError() }}</div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" (click)="closeEditor()">Отмена</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+          @if (isSaving()) {
+            <span class="spinner spinner-sm"></span>
+          }
+          {{ editedGenre() ? 'Сохранить' : 'Создать' }}
+        </button>
+      </div>
+    </form>
+  </app-modal>
+}
+
+@if (genreToDelete(); as genre) {
+  <app-confirm-dialog
+    title="Удаление жанра"
+    [message]="'Удалить жанр «' + genre.name + '»? Это действие нельзя отменить.'"
+    [blockedReason]="deleteBlockedReason()"
+    [busy]="isDeleting()"
+    [error]="deleteError()"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+}

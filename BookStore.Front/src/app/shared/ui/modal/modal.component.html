@@ -1,0 +1,17 @@
+<dialog
+  #dialog
+  class="modal"
+  [class.modal-lg]="size() === 'lg'"
+  [attr.aria-labelledby]="titleId"
+  (cancel)="onCancel($event)"
+  (close)="closed.emit()"
+>
+  <header class="modal-header">
+    <h2 class="modal-title" [id]="titleId">{{ title() }}</h2>
+    <button type="button" class="icon-btn" aria-label="Закрыть" (click)="closed.emit()">
+      <app-icon name="close" />
+    </button>
+  </header>
+
+  <ng-content />
+</dialog>

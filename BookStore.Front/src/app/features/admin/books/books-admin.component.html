@@ -1,0 +1,186 @@
+<header class="page-header">
+  <div>
+    <h1 class="page-title">Книги</h1>
+    <p class="page-subtitle">Каталог: авторы, цены, остатки на складе</p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn-ghost" [disabled]="books.isLoading()" (click)="reload()">
+      <app-icon name="refresh" [class.spin]="books.isLoading()" />
+      Обновить
+    </button>
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <app-icon name="plus" />
+      Добавить книгу
+    </button>
+  </div>
+</header>
+
+<section class="panel">
+  <div class="panel-header">
+    <span class="panel-title">Все книги</span>
+    <span class="counter">{{ rows().length }}</span>
+  </div>
+
+  @if (loadError()) {
+    <div class="state state-error" role="alert">
+      <app-icon name="alert" />
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn-ghost btn-sm" (click)="reload()">Повторить</button>
+    </div>
+  } @else if (books.isLoading() && rows().length === 0) {
+    <div class="state">
+      <span class="spinner"></span>
+      <p>Загрузка книг…</p>
+    </div>
+  } @else if (rows().length === 0) {
+    <div class="state">
+      <p>Книг пока нет.</p>
+      <button type="button" class="btn btn-primary btn-sm" (click)="openCreate()">
+        <app-icon name="plus" />
+        Добавить первую книгу
+      </button>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Книга</th>
+            <th>Жанр</th>
+            <th class="num">Цена</th>
+            <th class="num">Остаток</th>
+            <th class="actions"><span class="sr-only">Действия</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (book of rows(); track book.id) {
+            <tr>
+              <td>
+                <div class="cell-main">{{ book.title }}</div>
+                <div class="cell-sub">{{ book.author }}</div>
+              </td>
+              <td>
+                <span class="badge">{{ genreNames().get(book.genreId) ?? 'Неизвестный жанр' }}</span>
+              </td>
+              <td class="num">{{ book.price | currency }}</td>
+              <td class="num">
+                @if (book.stockQuantity > 0) {
+                  {{ book.stockQuantity }}
+                } @else {
+                  <span class="badge badge-danger">Нет в наличии</span>
+                }
+              </td>
+              <td class="actions">
+                <button type="button" class="btn btn-ghost btn-sm" (click)="openEdit(book)">
+                  <app-icon name="edit" />
+                  Изменить
+                </button>
+                <button type="button" class="btn btn-danger-ghost btn-sm" (click)="askDelete(book)">
+                  <app-icon name="trash" />
+                  Удалить
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (isEditorOpen()) {
+  <app-modal [title]="editedBook() ? 'Изменение книги' : 'Новая книга'" (closed)="closeEditor()">
+    <form [formGroup]="form" novalidate (ngSubmit)="save()">
+      <div class="modal-body">
+        @if (genres().length === 0) {
+          <div class="alert alert-info">Сначала создайте хотя бы один жанр — книга обязана к нему относиться.</div>
+        }
+
+        <div class="form-grid">
+          <label class="field span-2">
+            <span class="field-label">Название</span>
+            <input class="input" formControlName="title" autocomplete="off" autofocus />
+            @if (fieldError(form.controls.title); as error) {
+              <span class="field-error">{{ error }}</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field-label">Автор</span>
+            <input class="input" formControlName="author" autocomplete="off" />
+            @if (fieldError(form.controls.author); as error) {
+              <span class="field-error">{{ error }}</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field-label">Жанр</span>
+            <select class="select" formControlName="genreId">
+              <option value="" disabled>Выберите жанр</option>
+              @for (genre of genres(); track genre.id) {
+                <option [value]="genre.id">{{ genre.name }}</option>
+              }
+            </select>
+            @if (fieldError(form.controls.genreId); as error) {
+              <span class="field-error">{{ error }}</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field-label">Цена, ₽</span>
+            <input class="input" type="number" min="0.01" step="0.01" formControlName="price" />
+            @if (fieldError(form.controls.price); as error) {
+              <span class="field-error">{{ error }}</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field-label">Остаток на складе</span>
+            <input class="input" type="number" min="0" step="1" formControlName="stockQuantity" />
+            @if (fieldError(form.controls.stockQuantity); as error) {
+              <span class="field-error">{{ error }}</span>
+            } @else if (editedBook()) {
+              <span class="field-hint">API не поддерживает изменение остатка.</span>
+            }
+          </label>
+
+          <label class="field span-2">
+            <span class="field-label">Описание</span>
+            <textarea class="textarea" formControlName="description" rows="4"></textarea>
+            @if (fieldError(form.controls.description); as error) {
+              <span class="field-error">{{ error }}</span>
+            } @else {
+              <span class="field-hint">Необязательно, до 2000 символов.</span>
+            }
+          </label>
+        </div>
+
+        @if (saveError()) {
+          <div class="alert alert-error" role="alert">{{ saveError() }}</div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" (click)="closeEditor()">Отмена</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+          @if (isSaving()) {
+            <span class="spinner spinner-sm"></span>
+          }
+          {{ editedBook() ? 'Сохранить' : 'Создать' }}
+        </button>
+      </div>
+    </form>
+  </app-modal>
+}
+
+@if (bookToDelete(); as book) {
+  <app-confirm-dialog
+    title="Удаление книги"
+    [message]="'Удалить книгу «' + book.title + '»? Это действие нельзя отменить.'"
+    [blockedReason]="deleteBlockedReason()"
+    [busy]="isDeleting()"
+    [error]="deleteError()"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+}

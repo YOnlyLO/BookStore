@@ -1,0 +1,97 @@
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.summary > div {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  padding: 12px 16px;
+  border-right: 1px solid var(--border);
+}
+
+.summary > div:last-child {
+  border-right: 0;
+}
+
+.summary dt {
+  color: var(--text-subtle);
+  font-size: 12px;
+}
+
+.summary dd {
+  font-weight: 550;
+}
+
+.summary .total {
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.section {
+  display: grid;
+  gap: 10px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.items {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.empty-items {
+  padding: 20px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.add-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px 140px auto;
+  align-items: start;
+  gap: 12px;
+}
+
+/* Выравниваем кнопку по полям ввода, а не по подписям над ними. */
+.add-button {
+  margin-top: 25px;
+  height: 38px;
+}
+
+@media (max-width: 720px) {
+  .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .summary > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .add-item {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .add-item .field:first-child,
+  .add-button {
+    grid-column: 1 / -1;
+  }
+
+  .add-button {
+    margin-top: 0;
+  }
+}

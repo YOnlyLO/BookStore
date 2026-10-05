@@ -1,0 +1,60 @@
+<header class="page-header">
+  <div>
+    <h1 class="page-title">Дашборд</h1>
+    <p class="page-subtitle">Выберите раздел, чтобы открыть список записей</p>
+  </div>
+</header>
+
+@if (loadError()) {
+  <div class="alert alert-error load-error" role="alert">
+    <span>{{ loadError() }}</span>
+    <button type="button" class="btn btn-ghost btn-sm" (click)="reload()">
+      <app-icon name="refresh" />
+      Повторить
+    </button>
+  </div>
+}
+
+<div class="cards">
+  @for (card of cards(); track card.path) {
+    <a class="card" [routerLink]="['/admin', card.path]">
+      <div class="card-top">
+        <span class="card-icon" [attr.data-section]="card.path">
+          <app-icon [name]="card.icon" />
+        </span>
+        <app-icon class="card-arrow" name="arrow-right" />
+      </div>
+
+      <div>
+        <div class="card-label">{{ card.title }}</div>
+        <div class="card-value">
+          @if (card.count !== null) {
+            {{ card.count }}
+          } @else if (loadError()) {
+            —
+          } @else {
+            <span class="skeleton" aria-label="Загрузка"></span>
+          }
+        </div>
+      </div>
+
+      <p class="card-desc">{{ card.description }}</p>
+    </a>
+  }
+</div>
+
+@if (orderStats(); as stats) {
+  <section class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Заказы по статусам</span>
+    </div>
+    <div class="stats">
+      @for (stat of stats; track stat.status) {
+        <a class="stat" routerLink="/admin/orders">
+          <app-order-status-badge [status]="stat.status" />
+          <span class="stat-value">{{ stat.count }}</span>
+        </a>
+      }
+    </div>
+  </section>
+}

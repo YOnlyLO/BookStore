@@ -1,0 +1,49 @@
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/admin">
+      <span class="brand-logo">
+        <app-icon name="book" />
+      </span>
+      <span class="brand-text">
+        <strong>BookStore</strong>
+        <small>Администрирование</small>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Разделы админ-панели">
+      <a
+        class="nav-link"
+        routerLink="/admin"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <app-icon name="dashboard" />
+        <span>Дашборд</span>
+      </a>
+
+      <span class="nav-caption">Данные</span>
+
+      @for (section of sections; track section.path) {
+        <a
+          class="nav-link"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          [routerLink]="['/admin', section.path]"
+        >
+          <app-icon [name]="section.icon" />
+          <span>{{ section.title }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>API</span>
+      <span class="mono">{{ apiUrl }}</span>
+    </div>
+  </aside>
+
+  <main class="workspace">
+    <router-outlet />
+  </main>
+</div>

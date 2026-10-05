@@ -1,0 +1,160 @@
+<header class="page-header">
+  <div>
+    <h1 class="page-title">Пользователи</h1>
+    <p class="page-subtitle">Учётные записи покупателей</p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn-ghost" [disabled]="users.isLoading()" (click)="reload()">
+      <app-icon name="refresh" [class.spin]="users.isLoading()" />
+      Обновить
+    </button>
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <app-icon name="plus" />
+      Добавить пользователя
+    </button>
+  </div>
+</header>
+
+<section class="panel">
+  <div class="panel-header">
+    <span class="panel-title">Все пользователи</span>
+    <span class="counter">{{ rows().length }}</span>
+  </div>
+
+  @if (loadError()) {
+    <div class="state state-error" role="alert">
+      <app-icon name="alert" />
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn-ghost btn-sm" (click)="reload()">Повторить</button>
+    </div>
+  } @else if (users.isLoading() && rows().length === 0) {
+    <div class="state">
+      <span class="spinner"></span>
+      <p>Загрузка пользователей…</p>
+    </div>
+  } @else if (rows().length === 0) {
+    <div class="state">
+      <p>Пользователей пока нет.</p>
+      <button type="button" class="btn btn-primary btn-sm" (click)="openCreate()">
+        <app-icon name="plus" />
+        Добавить первого пользователя
+      </button>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Пользователь</th>
+            <th>Email</th>
+            <th class="num">Заказов</th>
+            <th class="actions"><span class="sr-only">Действия</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of rows(); track user.id) {
+            <tr>
+              <td>
+                <div class="person">
+                  <span class="avatar" aria-hidden="true">{{ initials(user) }}</span>
+                  <span class="cell-main">{{ user.lastName }} {{ user.firstName }}</span>
+                </div>
+              </td>
+              <td class="muted">{{ user.email }}</td>
+              <td class="num">{{ orderCounts().get(user.id) ?? 0 }}</td>
+              <td class="actions">
+                <button type="button" class="btn btn-ghost btn-sm" (click)="openEdit(user)">
+                  <app-icon name="edit" />
+                  Изменить
+                </button>
+                <button type="button" class="btn btn-danger-ghost btn-sm" (click)="askDelete(user)">
+                  <app-icon name="trash" />
+                  Удалить
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (isEditorOpen()) {
+  <app-modal
+    [title]="editedUser() ? 'Изменение пользователя' : 'Новый пользователь'"
+    (closed)="closeEditor()"
+  >
+    <form [formGroup]="form" novalidate (ngSubmit)="save()">
+      <div class="modal-body">
+        <div class="form-grid">
+          <label class="field">
+            <span class="field-label">Имя</span>
+            <input class="input" formControlName="firstName" autocomplete="off" autofocus />
+            @if (fieldError(form.controls.firstName); as error) {
+              <span class="field-error">{{ error }}</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field-label">Фамилия</span>
+            <input class="input" formControlName="lastName" autocomplete="off" />
+            @if (fieldError(form.controls.lastName); as error) {
+              <span class="field-error">{{ error }}</span>
+            }
+          </label>
+
+          <label class="field span-2">
+            <span class="field-label">Email</span>
+            <input class="input" type="email" formControlName="email" autocomplete="off" />
+            @if (fieldError(form.controls.email); as error) {
+              <span class="field-error">{{ error }}</span>
+            }
+          </label>
+
+          @if (!editedUser()) {
+            <label class="field span-2">
+              <span class="field-label">Хеш пароля</span>
+              <input class="input mono" formControlName="passwordHash" autocomplete="off" />
+              @if (fieldError(form.controls.passwordHash); as error) {
+                <span class="field-error">{{ error }}</span>
+              } @else {
+                <span class="field-hint">
+                  API принимает уже готовый хеш и сохраняет его как есть — сервер пароль не хеширует.
+                </span>
+              }
+            </label>
+          }
+        </div>
+
+        @if (saveError()) {
+          <div class="alert alert-error" role="alert">{{ saveError() }}</div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" (click)="closeEditor()">Отмена</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+          @if (isSaving()) {
+            <span class="spinner spinner-sm"></span>
+          }
+          {{ editedUser() ? 'Сохранить' : 'Создать' }}
+        </button>
+      </div>
+    </form>
+  </app-modal>
+}
+
+@if (userToDelete(); as user) {
+  <app-confirm-dialog
+    title="Удаление пользователя"
+    [message]="
+      'Удалить пользователя ' + user.lastName + ' ' + user.firstName + '? Это действие нельзя отменить.'
+    "
+    [blockedReason]="deleteBlockedReason()"
+    [busy]="isDeleting()"
+    [error]="deleteError()"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+}

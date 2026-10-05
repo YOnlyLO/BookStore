@@ -1,0 +1,144 @@
+.load-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  transition:
+    border-color 0.15s,
+    background-color 0.15s,
+    transform 0.15s;
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+  transform: translateY(-2px);
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  font-size: 18px;
+}
+
+.card-icon[data-section='genres'] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.card-icon[data-section='books'] {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.card-icon[data-section='users'] {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.card-icon[data-section='orders'] {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.card-arrow {
+  color: var(--text-subtle);
+  transition:
+    color 0.15s,
+    transform 0.15s;
+}
+
+.card:hover .card-arrow {
+  color: var(--primary);
+  transform: translateX(3px);
+}
+
+.card-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.card-value {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  font-size: 32px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.card-desc {
+  color: var(--text-subtle);
+  font-size: 13px;
+}
+
+.skeleton {
+  width: 56px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2));
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-right: 1px solid var(--border);
+  color: var(--text);
+}
+
+.stat:last-child {
+  border-right: 0;
+}
+
+.stat:hover {
+  background: var(--surface-2);
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 650;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

@@ -2,29 +2,29 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../environments/environment';
-import { CreateGenreRequest, Genre, UpdateGenreRequest } from '../models/genre.model';
+import { Book, CreateBookRequest, UpdateBookRequest } from '../models/book.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GenreService {
+export class BookService {
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl = `${environment.apiUrl}/api/genres`;
+  private readonly apiUrl = `${environment.apiUrl}/api/books`;
 
   getAll() {
-    return this.http.get<Genre[]>(this.apiUrl);
+    return this.http.get<Book[]>(this.apiUrl);
   }
 
   getById(id: string) {
-    return this.http.get<Genre>(`${this.apiUrl}/${id}`);
+    return this.http.get<Book>(`${this.apiUrl}/${id}`);
   }
 
-  create(request: CreateGenreRequest) {
-    return this.http.post<Genre>(this.apiUrl, request);
+  create(request: CreateBookRequest) {
+    return this.http.post<Book>(this.apiUrl, request);
   }
 
-  update(id: string, request: UpdateGenreRequest) {
+  update(id: string, request: UpdateBookRequest) {
     return this.http.put<void>(`${this.apiUrl}/${id}`, request);
   }
 

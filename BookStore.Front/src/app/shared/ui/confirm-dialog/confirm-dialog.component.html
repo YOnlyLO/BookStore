@@ -1,0 +1,30 @@
+<app-modal [title]="title()" (closed)="cancelled.emit()">
+  <div class="modal-body">
+    <p>{{ message() }}</p>
+
+    @if (blockedReason()) {
+      <div class="alert alert-warning">{{ blockedReason() }}</div>
+    }
+
+    @if (error()) {
+      <div class="alert alert-error" role="alert">{{ error() }}</div>
+    }
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-ghost" autofocus (click)="cancelled.emit()">
+      {{ cancelLabel() }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      [disabled]="busy() || !!blockedReason()"
+      (click)="confirmed.emit()"
+    >
+      @if (busy()) {
+        <span class="spinner spinner-sm"></span>
+      }
+      {{ confirmLabel() }}
+    </button>
+  </div>
+</app-modal>

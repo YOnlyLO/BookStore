@@ -1,0 +1,145 @@
+<header class="page-header">
+  <div>
+    <h1 class="page-title">Заказы</h1>
+    <p class="page-subtitle">Состав заказов и их статусы</p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn-ghost" [disabled]="orders.isLoading()" (click)="reload()">
+      <app-icon name="refresh" [class.spin]="orders.isLoading()" />
+      Обновить
+    </button>
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <app-icon name="plus" />
+      Создать заказ
+    </button>
+  </div>
+</header>
+
+<section class="panel">
+  <div class="panel-header">
+    <span class="panel-title">Все заказы</span>
+    <span class="counter">{{ rows().length }}</span>
+  </div>
+
+  @if (loadError()) {
+    <div class="state state-error" role="alert">
+      <app-icon name="alert" />
+      <p>{{ loadError() }}</p>
+      <button type="button" class="btn btn-ghost btn-sm" (click)="reload()">Повторить</button>
+    </div>
+  } @else if (orders.isLoading() && rows().length === 0) {
+    <div class="state">
+      <span class="spinner"></span>
+      <p>Загрузка заказов…</p>
+    </div>
+  } @else if (rows().length === 0) {
+    <div class="state">
+      <p>Заказов пока нет.</p>
+      <button type="button" class="btn btn-primary btn-sm" (click)="openCreate()">
+        <app-icon name="plus" />
+        Создать первый заказ
+      </button>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Заказ</th>
+            <th>Покупатель</th>
+            <th>Создан</th>
+            <th>Статус</th>
+            <th class="num">Позиций</th>
+            <th class="num">Сумма</th>
+            <th class="actions"><span class="sr-only">Действия</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of rows(); track order.id) {
+            <tr>
+              <td class="mono" [title]="order.id">#{{ orderNumber(order) }}</td>
+              <td class="cell-main">{{ userNames().get(order.userId) ?? 'Неизвестный пользователь' }}</td>
+              <td class="muted">{{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+              <td><app-order-status-badge [status]="order.status" /></td>
+              <td class="num">{{ order.items.length }}</td>
+              <td class="num cell-main">{{ order.totalPrice | currency }}</td>
+              <td class="actions">
+                <button type="button" class="btn btn-ghost btn-sm" (click)="openEdit(order)">
+                  <app-icon name="edit" />
+                  Изменить
+                </button>
+                <button type="button" class="btn btn-danger-ghost btn-sm" (click)="askDelete(order)">
+                  <app-icon name="trash" />
+                  Удалить
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (isCreateOpen()) {
+  <app-modal title="Новый заказ" (closed)="closeCreate()">
+    <form [formGroup]="createForm" novalidate (ngSubmit)="create()">
+      <div class="modal-body">
+        @if (users().length === 0) {
+          <div class="alert alert-info">Сначала добавьте пользователя — заказ оформляется на покупателя.</div>
+        }
+
+        <label class="field">
+          <span class="field-label">Покупатель</span>
+          <select class="select" formControlName="userId" autofocus>
+            <option value="" disabled>Выберите пользователя</option>
+            @for (user of users(); track user.id) {
+              <option [value]="user.id">{{ user.lastName }} {{ user.firstName }} · {{ user.email }}</option>
+            }
+          </select>
+          @if (fieldError(createForm.controls.userId); as error) {
+            <span class="field-error">{{ error }}</span>
+          } @else {
+            <span class="field-hint">Заказ создаётся пустым, книги добавляются на следующем шаге.</span>
+          }
+        </label>
+
+        @if (createError()) {
+          <div class="alert alert-error" role="alert">{{ createError() }}</div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" (click)="closeCreate()">Отмена</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isCreating()">
+          @if (isCreating()) {
+            <span class="spinner spinner-sm"></span>
+          }
+          Создать
+        </button>
+      </div>
+    </form>
+  </app-modal>
+}
+
+@if (editedOrderId(); as orderId) {
+  <app-order-editor
+    [orderId]="orderId"
+    [userNames]="userNames()"
+    [books]="books()"
+    (closed)="closeEdit()"
+  />
+}
+
+@if (orderToDelete(); as order) {
+  <app-confirm-dialog
+    title="Удаление заказа"
+    [message]="
+      'Удалить заказ #' + orderNumber(order) + ' вместе со всеми позициями? Это действие нельзя отменить.'
+    "
+    [busy]="isDeleting()"
+    [error]="deleteError()"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+}

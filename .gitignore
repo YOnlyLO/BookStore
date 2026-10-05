@@ -430,9 +430,8 @@ test-results/
 .AppleDouble
 .LSOverride
 
-# Icon must end with two \r
-Icon
-
+# Шаблон "Icon\r\r" для иконок папок macOS убран: без двух \r он превращается в "Icon"
+# и (git на Windows не различает регистр) игнорирует любые папки icon/.
 
 # Thumbnails
 ._*

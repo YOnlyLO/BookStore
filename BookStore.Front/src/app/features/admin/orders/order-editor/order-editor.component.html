@@ -1,0 +1,194 @@
+<app-modal size="lg" [title]="title()" (closed)="closed.emit()">
+  <div class="modal-body">
+    @if (current(); as order) {
+      <dl class="summary">
+        <div>
+          <dt>Покупатель</dt>
+          <dd>{{ customerName() }}</dd>
+        </div>
+        <div>
+          <dt>Создан</dt>
+          <dd>{{ order.createdAt | date: 'dd.MM.yyyy HH:mm' }}</dd>
+        </div>
+        <div>
+          <dt>Статус</dt>
+          <dd><app-order-status-badge [status]="order.status" /></dd>
+        </div>
+        <div>
+          <dt>Итого</dt>
+          <dd class="total">{{ order.totalPrice | currency }}</dd>
+        </div>
+      </dl>
+
+      <section class="section">
+        <h3 class="section-title">Состав заказа</h3>
+
+        @if (order.items.length === 0) {
+          <p class="empty-items">
+            В заказе пока нет книг. Чтобы подтвердить заказ, добавьте хотя бы одну.
+          </p>
+        } @else {
+          <div class="table-wrap items">
+            <table class="table table-compact">
+              <thead>
+                <tr>
+                  <th>Книга</th>
+                  <th class="num">Кол-во</th>
+                  <th class="num">Цена</th>
+                  <th class="num">Сумма</th>
+                  @if (isNew()) {
+                    <th class="actions"><span class="sr-only">Действия</span></th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of order.items; track item.id) {
+                  @let book = booksById().get(item.bookId);
+                  <tr>
+                    <td>
+                      <div class="cell-main">{{ book?.title ?? 'Неизвестная книга' }}</div>
+                      @if (book) {
+                        <div class="cell-sub">{{ book.author }}</div>
+                      }
+                    </td>
+                    <td class="num">{{ item.quantity }}</td>
+                    <td class="num">{{ item.unitPrice | currency }}</td>
+                    <td class="num cell-main">{{ item.totalPrice | currency }}</td>
+                    @if (isNew()) {
+                      <td class="actions">
+                        <button
+                          type="button"
+                          class="icon-btn danger"
+                          aria-label="Убрать из заказа"
+                          title="Убрать из заказа"
+                          [disabled]="isBusy()"
+                          (click)="removeItem(item)"
+                        >
+                          <app-icon name="trash" />
+                        </button>
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+
+      @if (isNew()) {
+        <form class="section" [formGroup]="itemForm" novalidate (ngSubmit)="addItem()">
+          <h3 class="section-title">Добавить книгу</h3>
+
+          <div class="add-item">
+            <label class="field">
+              <span class="field-label">Книга</span>
+              <select class="select" formControlName="bookId" (change)="onBookSelected()">
+                <option value="" disabled>Выберите книгу</option>
+                @for (book of books(); track book.id) {
+                  <option [value]="book.id">
+                    {{ book.title }} — {{ book.author }} · {{ book.price | currency }} · на складе:
+                    {{ book.stockQuantity }}
+                  </option>
+                }
+              </select>
+              @if (fieldError(itemForm.controls.bookId); as error) {
+                <span class="field-error">{{ error }}</span>
+              }
+            </label>
+
+            <label class="field">
+              <span class="field-label">Кол-во</span>
+              <input class="input" type="number" min="1" step="1" formControlName="quantity" />
+              @if (fieldError(itemForm.controls.quantity); as error) {
+                <span class="field-error">{{ error }}</span>
+              }
+            </label>
+
+            <label class="field">
+              <span class="field-label">Цена за шт., ₽</span>
+              <input class="input" type="number" min="0.01" step="0.01" formControlName="unitPrice" />
+              @if (fieldError(itemForm.controls.unitPrice); as error) {
+                <span class="field-error">{{ error }}</span>
+              }
+            </label>
+
+            <button type="submit" class="btn btn-primary add-button" [disabled]="isBusy()">
+              <app-icon name="plus" />
+              Добавить
+            </button>
+          </div>
+
+          <span class="field-hint">
+            Цена подставляется из каталога. Если книга уже есть в заказе, количество суммируется.
+          </span>
+        </form>
+      } @else {
+        <div class="alert alert-info">Состав можно менять только у заказа в статусе «Новый».</div>
+      }
+
+      @if (actionError() && !isCancelConfirmOpen()) {
+        <div class="alert alert-error" role="alert">{{ actionError() }}</div>
+      }
+    } @else if (loadError()) {
+      <div class="state state-error" role="alert">
+        <app-icon name="alert" />
+        <p>{{ loadError() }}</p>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="order.reload()">Повторить</button>
+      </div>
+    } @else {
+      <div class="state">
+        <span class="spinner"></span>
+        <p>Загрузка заказа…</p>
+      </div>
+    }
+  </div>
+
+  <div class="modal-footer">
+    @if (canCancel()) {
+      <button
+        type="button"
+        class="btn btn-danger-ghost footer-start"
+        [disabled]="isBusy()"
+        (click)="askCancel()"
+      >
+        <app-icon name="ban" />
+        Отменить заказ
+      </button>
+    }
+
+    <button type="button" class="btn btn-ghost" (click)="closed.emit()">Закрыть</button>
+
+    @if (isNew()) {
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="isBusy() || !canConfirm()"
+        (click)="confirmOrder()"
+      >
+        <app-icon name="check" />
+        Подтвердить
+      </button>
+    }
+
+    @if (canComplete()) {
+      <button type="button" class="btn btn-success" [disabled]="isBusy()" (click)="completeOrder()">
+        <app-icon name="flag" />
+        Завершить
+      </button>
+    }
+  </div>
+</app-modal>
+
+@if (isCancelConfirmOpen()) {
+  <app-confirm-dialog
+    title="Отмена заказа"
+    message="Отменить заказ? Отменённый заказ нельзя вернуть в работу."
+    confirmLabel="Отменить заказ"
+    cancelLabel="Не отменять"
+    [busy]="isBusy()"
+    [error]="actionError()"
+    (confirmed)="cancelOrder()"
+    (cancelled)="isCancelConfirmOpen.set(false)"
+  />
+}
