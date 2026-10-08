@@ -77,4 +77,23 @@ public class StatusMeter : Control
         TextRenderer.DrawText(graphics, _count.ToString(), Fonts.Strong, countBounds, Palette.Text,
             TextFormatFlags.Right | TextFormatFlags.VerticalCenter);
     }
+
+    // Строка рисуется вручную — статус и число сообщаем экранному диктору и UI-тестам явно.
+    protected override AccessibleObject CreateAccessibilityInstance() => new StatusMeterAccessibleObject(this);
+
+    private sealed class StatusMeterAccessibleObject : ControlAccessibleObject
+    {
+        private readonly StatusMeter _meter;
+
+        public StatusMeterAccessibleObject(StatusMeter meter)
+            : base(meter)
+        {
+            _meter = meter;
+        }
+
+        public override string? Name => _meter.AccessibleName ?? $"{_meter.Badge.Text}: {_meter._count}";
+
+        public override AccessibleRole Role =>
+            _meter.AccessibleRole == AccessibleRole.Default ? AccessibleRole.StaticText : _meter.AccessibleRole;
+    }
 }

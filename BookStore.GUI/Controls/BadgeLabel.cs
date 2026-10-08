@@ -58,4 +58,23 @@ public class BadgeLabel : Control
         if (Badge is not null)
             Painting.DrawBadge(e.Graphics, ClientRectangle, Badge, Fonts.Small, background);
     }
+
+    // Метка рисуется вручную — её текст сообщаем экранному диктору и UI-тестам явно.
+    protected override AccessibleObject CreateAccessibilityInstance() => new BadgeLabelAccessibleObject(this);
+
+    private sealed class BadgeLabelAccessibleObject : ControlAccessibleObject
+    {
+        private readonly BadgeLabel _label;
+
+        public BadgeLabelAccessibleObject(BadgeLabel label)
+            : base(label)
+        {
+            _label = label;
+        }
+
+        public override string? Name => _label.AccessibleName ?? _label.Badge?.Text;
+
+        public override AccessibleRole Role =>
+            _label.AccessibleRole == AccessibleRole.Default ? AccessibleRole.StaticText : _label.AccessibleRole;
+    }
 }

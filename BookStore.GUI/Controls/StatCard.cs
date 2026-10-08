@@ -172,9 +172,29 @@ public class StatCard : Control
         return height;
     }
 
+    // Карточка рисуется целиком, поэтому без своего AccessibleObject экранный диктор
+    // и UI-тесты видят безымянную панель вместо названия раздела и числа.
+    protected override AccessibleObject CreateAccessibilityInstance() => new StatCardAccessibleObject(this);
+
     private void SetAndRepaint(ref string field, string? value)
     {
         field = value ?? string.Empty;
         Invalidate();
+    }
+
+    private sealed class StatCardAccessibleObject : ControlAccessibleObject
+    {
+        private readonly StatCard _card;
+
+        public StatCardAccessibleObject(StatCard card)
+            : base(card)
+        {
+            _card = card;
+        }
+
+        public override string? Name => _card.AccessibleName ?? $"{_card.Title}: {_card.Value}";
+
+        public override AccessibleRole Role =>
+            _card.AccessibleRole == AccessibleRole.Default ? AccessibleRole.PushButton : _card.AccessibleRole;
     }
 }

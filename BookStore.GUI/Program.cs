@@ -11,7 +11,7 @@ static class Program
     ///  The main entry point for the application.
     /// </summary>
     [STAThread]
-    static void Main()
+    static void Main(string[] args)
     {
         // Цены в рублях и даты в русском формате независимо от настроек Windows.
         CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("ru-RU");
@@ -22,7 +22,7 @@ static class Program
         Application.ThreadException += (_, e) =>
             MessageDialog.ShowAlert(Form.ActiveForm, "Непредвиденная ошибка", e.Exception.Message);
 
-        var settings = AppSettings.Load();
+        var settings = AppSettings.Load(args);
 
         using var httpClient = new HttpClient
         {
